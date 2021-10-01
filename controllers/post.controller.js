@@ -44,22 +44,57 @@ function show(req, res) {
 
 function showAll(req, res) {
   models.Post.findAll()
-  .then((result) => {
-    if (!result) {
-      throw 'No posts found!';
-    }
-    res.status(200).json(result);
-  })
-  .catch((error) => {
-    res.status(500).json({
-      message: 'Something went wrong!',
-      error: error,
+    .then((result) => {
+      if (!result.length) {
+        throw 'No posts found!';
+      }
+      res.status(200).json(result);
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: 'Something went wrong!',
+        error: error,
+      });
     });
-  });
+}
+
+function update(req, res) {
+  const id = req.params.id;
+  const updatedPost = {
+    title: req.body.title,
+    content: req.body.content,
+    imageUrl: req.body.image_url,
+    categoryId: req.body.category_id,
+  };
+
+  console.log(id, req.body);
+
+  models.Post.update(updatedPost, {
+    where: {
+      id: id,
+    },
+  })
+    .then((result) => {
+      if (!result) {
+        throw 'Post not found!';
+      }
+
+      res.status(200).json({
+        message: 'Post updated successfully!',
+        post: updatedPost,
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: 'Something went wrong!',
+        error: error,
+      });
+    });
 }
 
 module.exports = {
   save,
   show,
   showAll,
+  update,
 };
