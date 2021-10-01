@@ -42,7 +42,24 @@ function show(req, res) {
     });
 }
 
+function showAll(req, res) {
+  models.Post.findAll()
+  .then((result) => {
+    if (!result) {
+      throw 'No posts found!';
+    }
+    res.status(200).json(result);
+  })
+  .catch((error) => {
+    res.status(500).json({
+      message: 'Something went wrong!',
+      error: error,
+    });
+  });
+}
+
 module.exports = {
   save,
   show,
+  showAll,
 };
