@@ -67,8 +67,6 @@ function update(req, res) {
     categoryId: req.body.category_id,
   };
 
-  console.log(id, req.body);
-
   models.Post.update(updatedPost, {
     where: {
       id: id,
@@ -92,9 +90,38 @@ function update(req, res) {
     });
 }
 
+function destroy(req, res) {
+  const id = req.params.id;
+
+  models.Post.destroy({
+    where: {
+      id: id,
+    },
+  })
+    .then((result) => {
+      if (!result) {
+        throw 'Post not found!';
+      }
+
+      res.status(200).json({
+        message: 'Post deleted successfully!',
+        post: {
+          id
+        },
+      });
+    })
+    .catch((error) => {
+      res.status(500).json({
+        message: 'Something went wrong!',
+        error: error,
+      });
+    });
+}
+
 module.exports = {
   save,
   show,
   showAll,
   update,
+  destroy,
 };
