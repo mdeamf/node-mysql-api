@@ -1,6 +1,15 @@
 const models = require('../models');
+const { validatePost } = require('../schema/post.schema');
 
 function save(req, res) {
+  const validate = validatePost(req.body);
+  if (validate !== true) {
+    res.status(400).json({
+      message: 'Unexpected format!',
+      error: validate,
+    });
+  }
+
   const post = {
     title: req.body.title,
     content: req.body.content,
@@ -106,7 +115,7 @@ function destroy(req, res) {
       res.status(200).json({
         message: 'Post deleted successfully!',
         post: {
-          id
+          id,
         },
       });
     })
